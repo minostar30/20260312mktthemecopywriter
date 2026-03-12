@@ -53,7 +53,7 @@ ${year}년 ${monthName}의 시즌/맥락: ${season}
 카피만 출력하고, 설명이나 따옴표 없이 한 줄로 답해주세요.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: prompt,
     });
 

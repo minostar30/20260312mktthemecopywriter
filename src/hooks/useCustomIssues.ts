@@ -3,13 +3,13 @@ import { getMonthData } from '../data/marketingData';
 
 const STORAGE_PREFIX = 'marketing-issues';
 
-function getStorageKey(year: number, month: number) {
-  return `${STORAGE_PREFIX}-${year}-${month}`;
+function getStorageKey(month: number) {
+  return `${STORAGE_PREFIX}-${month}`;
 }
 
-function loadIssues(year: number, month: number): string[] | null {
+function loadIssues(month: number): string[] | null {
   try {
-    const raw = localStorage.getItem(getStorageKey(year, month));
+    const raw = localStorage.getItem(getStorageKey(month));
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : null;
@@ -18,26 +18,26 @@ function loadIssues(year: number, month: number): string[] | null {
   }
 }
 
-function saveIssues(year: number, month: number, issues: string[]) {
+function saveIssues(month: number, issues: string[]) {
   try {
-    localStorage.setItem(getStorageKey(year, month), JSON.stringify(issues));
+    localStorage.setItem(getStorageKey(month), JSON.stringify(issues));
   } catch {
     // ignore
   }
 }
 
-export function useCustomIssues(year: number, month: number) {
+export function useCustomIssues(month: number) {
   const [issues, setIssues] = useState<string[]>(() => {
-    const stored = loadIssues(year, month);
+    const stored = loadIssues(month);
     const defaults = getMonthData(month).issues;
     return stored ?? defaults;
   });
 
   useEffect(() => {
-    const stored = loadIssues(year, month);
+    const stored = loadIssues(month);
     const defaults = getMonthData(month).issues;
     setIssues(stored ?? defaults);
-  }, [year, month]);
+  }, [month]);
 
   const addIssue = useCallback(
     (text: string) => {
@@ -46,29 +46,29 @@ export function useCustomIssues(year: number, month: number) {
       setIssues((prev) => {
         if (prev.includes(trimmed)) return prev;
         const next = [...prev, trimmed];
-        saveIssues(year, month, next);
+        saveIssues(month, next);
         return next;
       });
     },
-    [year, month]
+    [month]
   );
 
   const removeIssue = useCallback(
     (index: number) => {
       setIssues((prev) => {
         const next = prev.filter((_, i) => i !== index);
-        saveIssues(year, month, next);
+        saveIssues(month, next);
         return next;
       });
     },
-    [year, month]
+    [month]
   );
 
   const resetToDefault = useCallback(() => {
     const defaults = getMonthData(month).issues;
     setIssues(defaults);
-    saveIssues(year, month, defaults);
-  }, [year, month]);
+    saveIssues(month, defaults);
+  }, [month]);
 
   return { issues, addIssue, removeIssue, resetToDefault };
 }

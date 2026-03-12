@@ -49,17 +49,15 @@ export function useThemeHistory() {
     return item;
   }, []);
 
-  const clearHistory = useCallback(() => {
-    setHistory([]);
+  const removeFromHistory = useCallback((id: string) => {
+    setHistory((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
   const historyBySelection = useCallback(
-    (year: number, month: number) =>
-      history
-        .filter((h) => h.year === year && h.month === month)
-        .slice(0, 20),
+    (month: number) =>
+      history.filter((h) => h.month === month).slice(0, 20),
     [history]
   );
 
-  return { history, addToHistory, clearHistory, historyBySelection };
+  return { history, addToHistory, removeFromHistory, historyBySelection };
 }
