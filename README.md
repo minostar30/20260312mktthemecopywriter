@@ -5,18 +5,19 @@
 ## 기능
 
 - **연도/월 선택**: 2024~2028년, 1~12월 선택
-- **시즌별 마케팅 이슈**: 선택한 달의 주요 마케팅 포인트 표시
+- **마케팅 이슈 편집**: 주요 마케팅 이슈 추가/삭제 가능 (연·월별 localStorage 저장)
 - **AI 테마 제안**: "테마 만들기" 버튼 클릭 시 Gemini가 매번 새로운 카피 생성
-- **히스토리 저장**: 제안된 테마를 선택 월별로 저장 (로컬스토리지)
-- **폴백 지원**: API 미설정 시 기본 테마 랜덤 제안
+- **제안 히스토리**: 최대 20개, 최신순 노출
+- **키비주얼 생성**: 히스토리의 테마 클릭 시 나노바나나 API로 이미지 예시 생성
 
-## Gemini API 설정 (Vercel 환경 변수)
+## API 설정 (Vercel 환경 변수)
 
-1. [Google AI Studio](https://aistudio.google.com/apikey)에서 API 키 발급
-2. **Vercel 배포**: 프로젝트 Settings → Environment Variables → `GEMINI_API_KEY` 추가
-3. **로컬 개발**: 프로젝트 루트에 `.env.local` 생성 후 `GEMINI_API_KEY=발급받은키` 추가
+| 변수명 | 설명 |
+|--------|------|
+| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey)에서 발급 - 테마 카피 생성 |
+| `NANOBANANA_API_KEY` | [나노바나나](https://nanobnana.com/ko/dashboard/api-keys)에서 발급 - 키비주얼 이미지 생성 |
 
-> API 키는 반드시 서버(Vercel 환경 변수)에만 설정해주세요. 클라이언트에 노출되면 보안 문제가 발생합니다.
+Vercel 프로젝트 Settings → Environment Variables에 위 변수들을 추가해주세요.
 
 ## 실행 방법
 

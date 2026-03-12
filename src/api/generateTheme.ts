@@ -7,7 +7,8 @@ export interface GenerateThemeResponse {
 
 export async function generateThemeWithGemini(
   year: number,
-  month: number
+  month: number,
+  issues?: string[]
 ): Promise<GenerateThemeResponse> {
   const monthData = getMonthData(month);
 
@@ -18,7 +19,7 @@ export async function generateThemeWithGemini(
       year,
       month,
       season: monthData.season,
-      issues: monthData.issues,
+      issues: issues ?? monthData.issues,
     }),
   });
 

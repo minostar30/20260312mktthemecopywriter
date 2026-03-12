@@ -23,7 +23,7 @@ function loadHistory(): ThemeHistoryItem[] {
 
 function saveHistory(items: ThemeHistoryItem[]) {
   try {
-    const toSave = items.slice(-50);
+    const toSave = items.slice(0, 100);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   } catch {
     // ignore
@@ -55,7 +55,9 @@ export function useThemeHistory() {
 
   const historyBySelection = useCallback(
     (year: number, month: number) =>
-      history.filter((h) => h.year === year && h.month === month),
+      history
+        .filter((h) => h.year === year && h.month === month)
+        .slice(0, 20),
     [history]
   );
 
