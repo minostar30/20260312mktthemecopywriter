@@ -10,11 +10,13 @@
 - **히스토리 저장**: 제안된 테마를 선택 월별로 저장 (로컬스토리지)
 - **폴백 지원**: API 미설정 시 기본 테마 랜덤 제안
 
-## Gemini API 설정
+## Gemini API 설정 (Vercel 환경 변수)
 
 1. [Google AI Studio](https://aistudio.google.com/apikey)에서 API 키 발급
-2. **Vercel 배포 시**: 프로젝트 Settings → Environment Variables → `GEMINI_API_KEY` 추가
-3. **로컬 개발 시**: 프로젝트 루트에 `.env.local` 생성 후 `GEMINI_API_KEY=발급받은키` 추가
+2. **Vercel 배포**: 프로젝트 Settings → Environment Variables → `GEMINI_API_KEY` 추가
+3. **로컬 개발**: 프로젝트 루트에 `.env.local` 생성 후 `GEMINI_API_KEY=발급받은키` 추가
+
+> API 키는 반드시 서버(Vercel 환경 변수)에만 설정해주세요. 클라이언트에 노출되면 보안 문제가 발생합니다.
 
 ## 실행 방법
 

@@ -5,23 +5,22 @@ interface RequestBody {
   month: number;
   season: string;
   issues: string[];
-  apiKey?: string;
 }
 
 export async function POST(request: Request) {
   try {
-    const body: RequestBody = await request.json();
-    const { year, month, season, issues, apiKey: clientApiKey } = body;
-
-    const apiKey = clientApiKey?.trim() || process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return Response.json(
         {
-          error: 'API 키가 필요합니다. 아래 입력란에 Gemini API 키를 입력하거나, Vercel 환경 변수에 GEMINI_API_KEY를 추가해주세요.',
+          error: 'GEMINI_API_KEY가 설정되지 않았습니다. Vercel 프로젝트 설정의 Environment Variables에 API 키를 추가해주세요.',
         },
         { status: 500 }
       );
     }
+
+    const body: RequestBody = await request.json();
+    const { year, month, season, issues } = body;
 
     if (!year || !month) {
       return Response.json(
@@ -67,8 +66,16 @@ ${year}년 ${monthName}의 시즌/맥락: ${season}
     }
 
     return Response.json({ theme: text });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : '알 수 없는 오류';
+  } catch (err: unknown) {
+    let message = '알 수 없는 오류';
+    if (err && typeof err === 'object' && 'message' in err) {
+      const msg = String((err as { message?: unknown }).message ?? '');
+      if (msg.includes('429') || msg.includes('quota') || msg.includes('RESOURCE_EXHAUSTED')) {
+        message = 'API 사용량 제한에 도달했습니다. 잠시 후 다시 시도해주세요.';
+      } else if (msg.length > 0 && msg.length < 200) {
+        message = msg;
+      }
+    }
     return Response.json(
       { error: `테마 생성 실패: ${message}` },
       { status: 500 }
