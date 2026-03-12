@@ -111,8 +111,12 @@ export function useThemeHistory() {
             month: item.month,
             theme: item.theme,
           });
-          if (error) throw error;
-        } catch {
+          if (error) {
+            console.error('[Supabase] 히스토리 저장 실패:', error.message, error.details);
+            throw error;
+          }
+        } catch (err) {
+          console.error('[Supabase] insert error:', err);
           setHistory((prev) => [item, ...prev]);
           return item;
         }
