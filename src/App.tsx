@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getMonthData, getRandomTheme, MONTH_NAMES } from './data/marketingData';
+import { getRandomTheme, MONTH_NAMES } from './data/marketingData';
 import { useThemeHistory } from './hooks/useThemeHistory';
 import { useCustomIssues } from './hooks/useCustomIssues';
 import { generateThemeWithGemini } from './api/generateTheme';
@@ -22,7 +22,6 @@ function App() {
   const [keyvisualError, setKeyvisualError] = useState<string | null>(null);
 
   const { addToHistory, historyBySelection, clearHistory } = useThemeHistory();
-  const monthData = getMonthData(month);
   const { issues, addIssue, removeIssue, resetToDefault } = useCustomIssues(
     year,
     month
