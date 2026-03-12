@@ -1,3 +1,5 @@
+export const maxDuration = 60;
+
 const NANOBANANA_BASE = 'https://nanobnana.com/api/v2';
 
 interface GenerateResponse {

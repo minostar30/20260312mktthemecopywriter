@@ -2,10 +2,13 @@
   "name": "marketing-theme-copywriter",
   "private": true,
   "version": "1.0.0",
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --noEmit && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
