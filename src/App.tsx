@@ -19,7 +19,12 @@ function App() {
   const [keyvisualLoading, setKeyvisualLoading] = useState(false);
   const [keyvisualError, setKeyvisualError] = useState<string | null>(null);
 
-  const { addToHistory, removeFromHistory, historyBySelection } = useThemeHistory();
+  const {
+    addToHistory,
+    removeFromHistory,
+    historyBySelection,
+    isLoading: historyLoading,
+  } = useThemeHistory();
   const { issues, addIssue, removeIssue, resetToDefault } = useCustomIssues(month);
   const selectionHistory = historyBySelection(month);
 
@@ -175,7 +180,7 @@ function App() {
         )}
       </section>
 
-      {selectionHistory.length > 0 && (
+      {(historyLoading || selectionHistory.length > 0) && (
         <section className="history-section">
           <div className="history-header">
             <h2>제안 히스토리</h2>
@@ -183,6 +188,9 @@ function App() {
               {MONTH_NAMES[month]} (최신순, 최대 20개)
             </span>
           </div>
+          {historyLoading ? (
+            <p className="history-loading">히스토리 불러오는 중...</p>
+          ) : (
           <ul className="history-list">
             {selectionHistory.map((item) => (
               <li key={item.id} className="history-item">
@@ -212,6 +220,7 @@ function App() {
               </li>
             ))}
           </ul>
+          )}
         </section>
       )}
 

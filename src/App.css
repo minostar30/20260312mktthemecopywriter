@@ -274,6 +274,13 @@
   color: #94a3b8;
 }
 
+.history-loading {
+  padding: 1.5rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
 .history-list {
   list-style: none;
   padding: 0;

@@ -15,8 +15,18 @@
 | 변수명 | 설명 |
 |--------|------|
 | `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey)에서 발급 - 테마 카피 + 키비주얼 이미지 생성 |
+| `VITE_SUPABASE_URL` | [Supabase](https://supabase.com) 프로젝트 URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase Anon(공개) 키 - 히스토리 저장용 |
 
 Vercel 프로젝트 Settings → Environment Variables에 위 변수들을 추가해주세요.
+
+### Supabase 테이블 설정
+
+1. [Supabase](https://supabase.com)에서 프로젝트 생성
+2. SQL Editor에서 `supabase/migrations/001_theme_history.sql` 내용 실행
+3. Project Settings → API에서 URL과 anon key 확인 후 Vercel 환경변수에 추가
+
+> Supabase 미설정 시 히스토리는 localStorage에 저장됩니다 (기기별).
 
 ## 실행 방법
 
