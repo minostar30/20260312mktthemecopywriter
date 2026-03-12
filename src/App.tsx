@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getMonthData, getRandomTheme, MONTH_NAMES } from './data/marketingData';
 import { useThemeHistory } from './hooks/useThemeHistory';
-import { generateThemeWithGemini } from './api/generateTheme';
+import {
+  generateThemeWithGemini,
+  getStoredApiKey,
+  setStoredApiKey,
+} from './api/generateTheme';
 import './App.css';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = Array.from({ length: 5 }, (_, i) => CURRENT_YEAR - 2 + i);
+const GEMINI_KEY_URL = 'https://aistudio.google.com/apikey';
 
 function App() {
   const [year, setYear] = useState(CURRENT_YEAR);
@@ -13,10 +18,33 @@ function App() {
   const [currentTheme, setCurrentTheme] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState('');
 
   const { addToHistory, historyBySelection, clearHistory } = useThemeHistory();
   const monthData = getMonthData(month);
   const selectionHistory = historyBySelection(year, month);
+  const hasApiKey = !!getStoredApiKey();
+
+  useEffect(() => {
+    if (!hasApiKey) setShowApiKey(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- 초기 로드 시에만
+
+  const handleSaveApiKey = () => {
+    const key = apiKeyInput.trim();
+    if (key) {
+      setStoredApiKey(key);
+      setApiKeyInput('');
+      setShowApiKey(false);
+      setError(null);
+    }
+  };
+
+  const handleClearApiKey = () => {
+    setStoredApiKey(null);
+    setApiKeyInput('');
+    setShowApiKey(true);
+  };
 
   const handleCreateTheme = async () => {
     setIsLoading(true);
@@ -99,6 +127,55 @@ function App() {
         </div>
       </section>
 
+      {showApiKey && (
+        <section className="apikey-section">
+          <h2>Gemini API 키 설정</h2>
+          <p className="apikey-desc">
+            AI 테마 생성을 위해{' '}
+            <a href={GEMINI_KEY_URL} target="_blank" rel="noopener noreferrer">
+              Google AI Studio
+            </a>
+            에서 API 키를 발급받아 입력해주세요.
+          </p>
+          <div className="apikey-row">
+            <input
+              type="password"
+              placeholder="API 키 입력"
+              value={apiKeyInput}
+              onChange={(e) => setApiKeyInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSaveApiKey()}
+              className="apikey-input"
+            />
+            <button
+              type="button"
+              className="apikey-save-btn"
+              onClick={handleSaveApiKey}
+              disabled={!apiKeyInput.trim()}
+            >
+              저장
+            </button>
+          </div>
+          <div className="apikey-actions">
+            {hasApiKey && (
+              <button
+                type="button"
+                className="apikey-clear"
+                onClick={handleClearApiKey}
+              >
+                저장된 키 삭제
+              </button>
+            )}
+            <button
+              type="button"
+              className="apikey-toggle"
+              onClick={() => setShowApiKey(false)}
+            >
+              닫기
+            </button>
+          </div>
+        </section>
+      )}
+
       <section className="theme-section">
         <button
           type="button"
@@ -143,6 +220,13 @@ function App() {
       )}
 
       <footer className="footer">
+        <button
+          type="button"
+          className="footer-link"
+          onClick={() => setShowApiKey(true)}
+        >
+          {hasApiKey ? 'API 키 변경' : 'API 키 설정'}
+        </button>
         <button
           type="button"
           className="clear-btn"

@@ -5,22 +5,23 @@ interface RequestBody {
   month: number;
   season: string;
   issues: string[];
+  apiKey?: string;
 }
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const body: RequestBody = await request.json();
+    const { year, month, season, issues, apiKey: clientApiKey } = body;
+
+    const apiKey = clientApiKey?.trim() || process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return Response.json(
         {
-          error: 'GEMINI_API_KEY가 설정되지 않았습니다. Vercel 환경 변수에 API 키를 추가해주세요.',
+          error: 'API 키가 필요합니다. 아래 입력란에 Gemini API 키를 입력하거나, Vercel 환경 변수에 GEMINI_API_KEY를 추가해주세요.',
         },
         { status: 500 }
       );
     }
-
-    const body: RequestBody = await request.json();
-    const { year, month, season, issues } = body;
 
     if (!year || !month) {
       return Response.json(

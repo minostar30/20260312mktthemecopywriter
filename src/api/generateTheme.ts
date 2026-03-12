@@ -5,11 +5,35 @@ export interface GenerateThemeResponse {
   error?: string;
 }
 
+const API_KEY_STORAGE = 'gemini-api-key';
+
+export function getStoredApiKey(): string | null {
+  try {
+    return localStorage.getItem(API_KEY_STORAGE);
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredApiKey(key: string | null): void {
+  try {
+    if (key) {
+      localStorage.setItem(API_KEY_STORAGE, key);
+    } else {
+      localStorage.removeItem(API_KEY_STORAGE);
+    }
+  } catch {
+    // ignore
+  }
+}
+
 export async function generateThemeWithGemini(
   year: number,
-  month: number
+  month: number,
+  apiKey?: string | null
 ): Promise<GenerateThemeResponse> {
   const monthData = getMonthData(month);
+  const key = apiKey ?? getStoredApiKey();
 
   const res = await fetch('/api/generate-theme', {
     method: 'POST',
@@ -19,6 +43,7 @@ export async function generateThemeWithGemini(
       month,
       season: monthData.season,
       issues: monthData.issues,
+      ...(key && { apiKey: key }),
     }),
   });
 

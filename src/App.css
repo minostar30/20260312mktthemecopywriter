@@ -142,6 +142,107 @@
   border-left: 4px solid #f59e0b;
 }
 
+.apikey-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.apikey-section h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0 0 0.5rem 0;
+}
+
+.apikey-desc {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0 0 1rem 0;
+}
+
+.apikey-desc a {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.apikey-desc a:hover {
+  text-decoration: underline;
+}
+
+.apikey-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.apikey-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+}
+
+.apikey-input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.apikey-save-btn {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: #6366f1;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.apikey-save-btn:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.apikey-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.apikey-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.apikey-toggle,
+.apikey-clear {
+  font-size: 0.85rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.apikey-toggle {
+  color: #94a3b8;
+}
+
+.apikey-toggle:hover {
+  color: #64748b;
+}
+
+.apikey-clear {
+  color: #dc2626;
+}
+
+.apikey-clear:hover {
+  text-decoration: underline;
+}
+
+
 .current-theme {
   margin-top: 1.25rem;
   padding: 1.25rem;
@@ -229,8 +330,25 @@
 }
 
 .footer {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
   padding-top: 1rem;
+}
+
+.footer-link {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: #6366f1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
 }
 
 .clear-btn {
