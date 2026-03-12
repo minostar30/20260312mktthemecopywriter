@@ -63,9 +63,21 @@ No text overlay - image only.`;
     }
 
     return Response.json({ imageUrl: imageDataUrl });
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '알 수 없는 오류';
+  } catch (err: unknown) {
+    let message = '알 수 없는 오류';
+    if (err && typeof err === 'object' && 'message' in err) {
+      const msg = String((err as { message?: unknown }).message ?? '');
+      if (
+        msg.includes('429') ||
+        msg.includes('quota') ||
+        msg.includes('RESOURCE_EXHAUSTED')
+      ) {
+        message =
+          'API 사용량 제한에 도달했습니다. 이미지 생성은 무료 티어 제한이 엄격합니다. 잠시 후 다시 시도하시거나, Google AI Studio에서 유료 플랜을 고려해주세요.';
+      } else if (msg.length > 0 && msg.length < 200) {
+        message = msg;
+      }
+    }
     return Response.json(
       { error: `키비주얼 생성 실패: ${message}` },
       { status: 500 }
