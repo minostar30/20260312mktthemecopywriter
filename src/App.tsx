@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getMonthData, getRandomTheme, MONTH_NAMES } from './data/marketingData';
 import { useThemeHistory } from './hooks/useThemeHistory';
+import { generateThemeWithGemini } from './api/generateTheme';
 import './App.css';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -10,15 +11,37 @@ function App() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [currentTheme, setCurrentTheme] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { addToHistory, historyBySelection, clearHistory } = useThemeHistory();
   const monthData = getMonthData(month);
   const selectionHistory = historyBySelection(year, month);
 
-  const handleCreateTheme = () => {
-    const theme = getRandomTheme(month);
-    setCurrentTheme(theme);
-    addToHistory(year, month, theme);
+  const handleCreateTheme = async () => {
+    setIsLoading(true);
+    setError(null);
+    setCurrentTheme(null);
+
+    try {
+      const result = await generateThemeWithGemini(year, month);
+      if (result.error) {
+        setError(result.error);
+        const fallbackTheme = getRandomTheme(month);
+        setCurrentTheme(fallbackTheme);
+        addToHistory(year, month, fallbackTheme);
+      } else if (result.theme) {
+        setCurrentTheme(result.theme);
+        addToHistory(year, month, result.theme);
+      }
+    } catch {
+      setError('API 연결에 실패했습니다. 기본 테마를 제안합니다.');
+      const fallbackTheme = getRandomTheme(month);
+      setCurrentTheme(fallbackTheme);
+      addToHistory(year, month, fallbackTheme);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -77,9 +100,19 @@ function App() {
       </section>
 
       <section className="theme-section">
-        <button type="button" className="create-btn" onClick={handleCreateTheme}>
-          테마 만들기
+        <button
+          type="button"
+          className="create-btn"
+          onClick={handleCreateTheme}
+          disabled={isLoading}
+        >
+          {isLoading ? 'AI가 테마를 만들고 있어요...' : '테마 만들기'}
         </button>
+        {error && (
+          <div className="theme-error" role="alert">
+            {error}
+          </div>
+        )}
         {currentTheme && (
           <div className="current-theme">
             <span className="theme-label">제안 테마</span>
